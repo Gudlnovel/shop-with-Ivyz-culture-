@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ivyz Culture — Fashion You Love</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050505;
+    --panel:#0f0f10;
+    --muted:#b3b6bd;
+    --text:#f8f9fb;
+    --gold:#D4AF37;
+    --accent:#00c2a8;
+    --rose:#ff4ea1;
+    --radius:14px;
+    --shadow:0 12px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:Poppins,system-ui,Segoe UI,Roboto,Arial,sans-serif; background:linear-gradient(180deg,#070707,#0b0b0b); color:var(--text); -webkit-font-smoothing:antialiased}
+  a { color:inherit; }
+
+  /* Top bar */
+  .topbar{position:sticky;top:0;background:linear-gradient(90deg,#060606cc,#0a0a0acc);backdrop-filter: blur(6px);border-bottom:1px solid rgba(255,255,255,.04);z-index:80}
+  .container{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo-wrap{display:flex;align-items:center;gap:10px}
+  .logo-svg{width:46px;height:46px;border-radius:10px;display:inline-block;flex-shrink:0}
+  .brand h1{margin:0;font-family:"Playfair Display",serif;font-size:20px;color:var(--gold);letter-spacing:.6px}
+  .brand p{margin:0;font-size:12px;color:var(--muted)}
+  .search{flex:1;max-width:520px}
+  .search input{width:100%;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.04);background:#0f1112;color:var(--text)}
+  .nav-btns{display:flex;gap:10px;align-items:center}
+  .pill{background:rgba(255,255,255,.02);padding:8px 12px;border-radius:999px;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+
+  /* Hero */
+  .hero{position:relative;height:min(64vh,520px);margin-top:18px;overflow:hidden;border-radius:14px;max-width:1200px;margin-left:auto;margin-right:auto}
+  .hero img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.6) contrast(1.02)}
+  .hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,6,6,0.15),rgba(6,6,6,0.6));display:flex;align-items:flex-end;padding:36px}
+  .hero .hero-text{max-width:880px}
+  .kicker{color:var(--muted);font-size:12px;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:8px}
+  .headline{font-family:"Playfair Display",serif;font-size:clamp(28px,5vw,48px);color:var(--text);margin:0 0 8px 0}
+  .rot{color:var(--gold)}
+  .sub{color:#d6d8db;max-width:680px}
+
+  /* Grid */
+  .wrap{max-width:1200px;margin:26px auto;padding:0 16px}
+  .section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+  h3{margin:0;font-size:18px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media (max-width:820px){ .grid{grid-template-columns:1fr} }
+
+  .card{background:linear-gradient(180deg,#0e0f10,#0b0b0b);border-radius:12px;border:1px solid rgba(255,255,255,.04);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .card .pic img{width:100%;height:360px;object-fit:cover;display:block;transition:transform .28s}
+  .card:hover .pic img{transform:scale(1.03)}
+  .card .body{padding:12px}
+  .title{font-weight:700;color:var(--accent)}
+  .desc{color:var(--muted);margin-top:6px;font-size:13px}
+  .price{color:var(--gold);font-weight:800;margin-top:8px}
+  .actions{display:flex;gap:8px;margin-top:10px}
+  .btn{background:var(--accent);border:none;color:#022;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+  .btn.alt{background:transparent;border:1px solid rgba(255,255,255,.06);color:var(--text)}
+
+  /* Drawer */
+  .drawer{position:fixed;right:0;top:0;height:100vh;width:460px;max-width:100%;transform:translateX(110%);transition:transform .28s;background:linear-gradient(180deg,#0c0c0c,#0f0f0f);border-left:1px solid rgba(255,255,255,.04);z-index:90;box-shadow:var(--shadow)}
+  .drawer.open{transform:translateX(0)}
+  .drawer .head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .drawer .body{padding:14px 16px;overflow:auto;height:calc(100% - 56px - 160px)}
+  .drawer .foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.04)}
+  .cart-item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.04)}
+  .cart-item img{width:78px;height:78px;object-fit:cover;border-radius:10px}
+
+  /* Form controls */
+  .form{background:linear-gradient(180deg,#0f1112,#0b0b0b);border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,.03)}
+  .field{margin-top:10px}
+  .field input[type="text"], .field input[type="tel"], .field textarea, .field select{
+    width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.05);background:#0d0d0d;color:var(--text)
+  }
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* Summary */
+  .summary{margin-bottom:12px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.03);background:#0d0d0d}
+  .sum-row{display:flex;justify-content:space-between;padding:6px 0;color:var(--muted)}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+  .modal.open{display:flex}
+  .modal-card{width:100%;max-width:920px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#0f1011,#0b0b0b);border:1px solid rgba(255,255,255,.04);box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 1fr}
+  @media (max-width:860px){ .modal-card{grid-template-columns:1fr} }
+  .modal-left img{width:100%;height:100%;object-fit:cover}
+  .modal-right{padding:16px;display:flex;flex-direction:column;gap:10px}
+
+  /* Toast */
+  .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(120%);background:#0f1112;border:1px solid rgba(0,255,204,.1);color:var(--text);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);transition:transform .25s}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  footer{margin-top:26px;padding:20px 16px;color:var(--muted);max-width:1200px;margin-left:auto;margin-right:auto}
+  .footer-grid{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
+  .logo-text{font-family:"Playfair Display",serif;color:var(--gold);font-weight:700}
+  .copy-btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.04);background:#121212;color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+  <div class="container">
+    <div class="brand">
+      <div class="logo-wrap">
+        <!-- Black & Gold inline SVG logo that reads "Ivyz Culture" -->
+        <svg class="logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ivyz Culture logo">
+          <rect width="120" height="120" rx="18" fill="#080808"/>
+          <g fill="none" stroke="#D4AF37" stroke-width="2">
+            <path d="M24 82c10-22 34-40 60-28" stroke-linecap="round"/>
+            <path d="M28 36c18 6 36-3 56 6" stroke-linecap="round"/>
+          </g>
+          <text x="12" y="98" fill="#D4AF37" font-family="Playfair Display, serif" font-size="16" font-weight="700">Ivyz Culture</text>
+        </svg>
+      </div>
+      <div>
+        <h1>Ivyz Culture</h1>
+        <p class="small">Premium fashion • Port Harcourt</p>
+      </div>
+    </div>
+
+    <div class="search">
+      <input id="search" placeholder="Search items... (e.g. sneakers, wigs)">
+    </div>
+
+    <div class="nav-btns">
+      <div class="pill">🇳🇬 <strong>₦</strong></div>
+      <button id="viewCartBtn" class="btn alt">Cart • <span id="cartCount">0</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <img id="heroImg" src="https://i.postimg.cc/Jhc2NMW2/8144b09085dd4730aab64b10a1237db1.jpg" alt="Ivyz Culture hero">
+  <div class="overlay"></div>
+  <div style="position:absolute;inset:0;display:flex;align-items:flex-end;padding:40px">
+    <div class="hero-text">
+      <div class="kicker">Premium • Fashion • Fast Delivery</div>
+      <h2 class="headline"><span class="rot" id="rotator">Shop with us</span> — elevate your style</h2>
+      <div class="sub">Wigs, shoes, clothes & accessories. Tap an item to choose size & color, add to cart, and checkout with Moniepoint transfer.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<main class="wrap">
+  <div class="section-head">
+    <h3>New <strong style="color:var(--accent)">Arrivals</strong></h3>
+    <div class="small">2 items per row — tap image to view details</div>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+</main>
+
+<!-- CART DRAWER -->
+<aside id="cartDrawer" class="drawer" aria-hidden="true">
+  <div class="head">
+    <div style="font-weight:700">Your Cart</div>
+    <button id="closeCart" class="btn alt">Close</button>
+  </div>
+
+  <div class="body">
+    <div class="summary">
+      <div style="font-weight:700;margin-bottom:6px">Order Summary</div>
+      <div id="summaryList"></div>
+      <div class="sum-row" style="border-top:1px solid rgba(255,255,255,.03);padding-top:8px;margin-top:8px">
+        <div class="small">Subtotal</div>
+        <div id="cartTotal" style="font-weight:800">₦0</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:8px">Delivery & Payment</div>
+      <div class="form">
+        <div class="field required">
+          <label>Full name</label>
+          <input id="c_name" type="text" placeholder="Adaeze John">
+        </div>
+
+        <div class="field required">
+          <label>Phone</label>
+          <input id="c_phone" type="tel" placeholder="080..." >
+        </div>
+
+        <div class="field">
+          <label>Address (optional)</label>
+          <input id="c_address" type="text" placeholder="Street, area">
+        </div>
+
+        <div class="field">
+          <label>State (optional)</label>
+          <input id="c_state" type="text" placeholder="Rivers">
+        </div>
+
+        <div class="field">
+          <label>Order note (optional)</label>
+          <input id="c_note" type="text" placeholder="Any note for us">
+        </div>
+
+        <div class="field">
+          <label>Upload an image (optional) — buyer can add a photo</label>
+          <input id="c_image" type="file" accept="image/*">
+          <div style="margin-top:8px"><img id="previewImg" style="max-width:120px;border-radius:8px;display:none" alt="preview"></div>
+        </div>
+
+        <div style="margin-top:12px;border-radius:8px;border:1px solid rgba(255,255,255,.04);padding:10px">
+          <div style="font-weight:700">Pay via Moniepoint</div>
+          <div class="small">Transfer the total to the account below, then mark as transferred and place order (or add ref).</div>
+
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <div style="flex:1">
+              <div class="small">Bank</div>
+              <input value="Moniepoint MFB" readonly style="background:transparent;border:none;color:var(--muted)">
+            </div>
+            <div style="flex:1">
+              <div class="small">Account name</div>
+              <input value="Godfrey Chimnonso Goodluck" readonly style="background:transparent;border:none;color:var(--muted)">
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+            <div style="flex:1">
+              <div class="small">Account number</div>
+              <input id="acct" value="8142150017" readonly style="background:transparent;border:none;color:var(--muted)">
+            </div>
+            <div><button class="copy-btn" onclick="copyAcct()">Copy</button></div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <div style="flex:1">
+              <div class="small">Payment status</div>
+              <select id="c_status" style="width:100%;padding:8px;border-radius:8px;background:#0d0d0d;color:var(--text)">
+                <option value="planning">I will transfer now</option>
+                <option value="done">I have transferred</option>
+              </select>
+            </div>
+            <div style="flex:1">
+              <div class="small">Transfer reference (optional)</div>
+              <input id="c_ref" placeholder="eg MP12345" style="width:100%;padding:8px;border-radius:8px;background:#0d0d0d;color:var(--text)">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button id="placeOrder" class="btn" style="flex:1">Place Order</button>
+          <button id="openEmail" class="btn alt" style="flex:1">Open Email</button>
+        </div>
+
+        <div class="small" style="margin-top:8px">If you add a backend endpoint at <code>/submit-order</code> the site will POST the order (including uploaded image). Otherwise the page opens the mail client with the prepared message.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:700">Total</div>
+      <div style="font-weight:900">₦<span id="cartTotalFooter">0</span></div>
+    </div>
+  </div>
+</aside>
+
+<!-- PRODUCT MODAL -->
+<div id="productModal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <div style="padding:12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.03)">
+      <div id="m_title" style="font-weight:700"></div>
+      <button id="m_close" class="btn alt">Close</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr">
+      <div class="modal-left">
+        <img id="m_img" alt="" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <div class="modal-right" style="padding:16px">
+        <div id="m_price" style="font-weight:800;color:var(--gold)"></div>
+        <div id="m_desc" class="small" style="margin-top:8px"></div>
+
+        <div style="margin-top:12px">
+          <label class="small">Color</label>
+          <select id="m_color" style="width:100%;padding:8px;border-radius:8px;background:#0d0d0d;color:var(--text)">
+            <option>Black</option><option>Brown</option><option>Gold</option><option>Silver</option><option>Red</option><option>Blue</option><option>Beige</option><option>White</option>
+          </select>
+        </div>
+
+        <div style="margin-top:10px">
+          <label class="small">Size</label>
+          <select id="m_size" style="width:100%;padding:8px;border-radius:8px;background:#0d0d0d;color:var(--text)">
+            <option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
+          </select>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <div>
+            <label class="small">Qty</label><br>
+            <input id="m_qty" type="number" min="1" value="1" style="width:90px;padding:8px;border-radius:8px;background:#0d0d0d;color:var(--text)">
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="m_add" class="btn">Add to cart</button>
+          <button id="m_buy" class="btn alt">Buy now</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">Added to cart</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="logo-text">Ivyz Culture</div>
+      <div class="small">Curated fashion: wigs, shoes, clothes & accessories. Port Harcourt, Nigeria.</div>
+    </div>
+
+    <div>
+      <div style="font-weight:700">Contact</div>
+      <div class="small">📱 <a href="https://wa.me/2348142150017" target="_blank" rel="noopener">WhatsApp</a></div>
+      <div class="small">✉️ <a href="mailto:godfreygoodluck23@gmail.com">godfreygoodluck23@gmail.com</a></div>
+    </div>
+
+    <div>
+      <div style="font-weight:700">Payment</div>
+      <div class="small">Moniepoint MFB</div>
+      <div class="small">Godfrey Chimnonso Goodluck</div>
+      <div class="small">Acct: 8142150017</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:10px;color:var(--muted)">© <span id="yr"></span> Ivyz Culture. All rights reserved.</div>
+</footer>
+
+<script>
+/* ========= SITE CONFIG ========= */
+const OWNER = {
+  email: "godfreygoodluck23@gmail.com",
+  bank: { name: "Moniepoint MFB", account: "8142150017", accountName: "Godfrey Chimnonso Goodluck" },
+  submitEndpoint: "/submit-order" // change to your real backend endpoint if available
+};
+
+/* ========= HERO ROTATOR ========= */
+const heroPhrases = ["Shop with us","Ivyz Culture","New Arrivals","Style that speaks","Luxury for less"];
+const heroImages = [
+  "https://i.postimg.cc/Jhc2NMW2/8144b09085dd4730aab64b10a1237db1.jpg",
+  "https://i.postimg.cc/26LBp88H/b3dc60f5718f4d99a2fc419b4b89d244.jpg",
+  "https://i.postimg.cc/d38k1HCr/2e6dde5b13cd4f9fa267adda53238bd6.jpg",
+  "https://i.postimg.cc/NjxnTQtP/b19c6da6fa624b8a8a8827d1275ff9a4.jpg",
+  "https://i.postimg.cc/vDFr2xrL/bef9573b7d77404aad4bdeddc3d67b75.jpg"
+];
+let rotIdx = 0;
+setInterval(()=>{
+  rotIdx = (rotIdx+1) % heroPhrases.length;
+  document.getElementById('rotator').textContent = heroPhrases[rotIdx];
+  document.getElementById('heroImg').src = heroImages[rotIdx % heroImages.length];
+}, 3800);
+
+/* ========= PRODUCTS (your images) ========= */
+const PRODUCTS = [
+  {id:'p16', title:'Casual Sneakers (Grey)',        price:17500, img:'https://i.postimg.cc/QxQ1xtgw/20c270bcb4fb40ba978346cf3b389aca.jpg', desc:'Lightweight everyday sneakers.'},
+  {id:'p17', title:'High-top Sneakers (Black)',     price:18500, img:'https://i.postimg.cc/26LBp88H/b3dc60f5718f4d99a2fc419b4b89d244.jpg', desc:'Bold high-top street style.'},
+  {id:'p18', title:'Strappy Heels (Silver)',        price:17000, img:'https://i.postimg.cc/d38k1HCr/2e6dde5b13cd4f9fa267adda53238bd6.jpg', desc:'Shimmering event heels.'},
+  {id:'p19', title:'Stiletto Heels (Red)',          price:16500, img:'https://i.postimg.cc/d0Lhdtdq/3ad467290f9248b5aa3fa093b02b7209.jpg', desc:'Classic red stilettos.'},
+  {id:'p05', title:'Structured Handbag (Black)',    price:14500, img:'https://i.postimg.cc/Xq0qTfPJ/111facede16940bfa115b5d51fbc1b02.jpg', desc:'Boxy everyday handbag.'},
+  {id:'p06b',title:'Quilted Slides (Cream)',        price:9500,  img:'https://i.postimg.cc/5NgyRFS4/98cd36034a1b4e4eace9d9304351565c.jpg', desc:'Comfy quilted slides.'},
+  {id:'p06c',title:'Nude Strappy Heels',            price:16900, img:'https://i.postimg.cc/FHnR956w/f261bcbf784d4cafab634b1ba265cbbe.jpg', desc:'Minimal, chic straps.'},
+  {id:'p11', title:'Floral Midi Dress',             price:23500, img:'https://i.postimg.cc/GpycdBGs/1f4d917bcc0c4052a22259514d304a46.jpg', desc:'Romantic floral silhouette.'},
+  {id:'p12', title:'Box Bag (Luxury Style)',        price:12000, img:'https://i.postimg.cc/wv5gRSWq/7da95175d0724b4eac22a8a401c68b7e.jpg', desc:'Statement box bag.'},
+  {id:'p13', title:'Pearl Clutch',                  price:15000, img:'https://i.postimg.cc/vH2Mn7vV/85719446d10f4453a3d4ce5e161e27f0.jpg', desc:'Elegant pearl details.'},
+  {id:'p14', title:'Layered Necklace Set (Gold)',   price:8500,  img:'https://i.postimg.cc/MZd8k0NF/dcf8a794c23f4eaeb27312c31c5b8c56.jpg', desc:'Gold-tone multi-layer chains.'},
+  {id:'p15', title:'Mini Shoulder Bag (Beige)',     price:11000, img:'https://i.postimg.cc/6qQg6Sg1/d23382d94ba94b2bb15f47b78a83c8f4.jpg', desc:'Compact & chic carry.'},
+  {id:'p06', title:'Quilted Handbag (Black)',       price:14500, img:'https://i.postimg.cc/MKNNx9Dd/68d3fc5db7874515b6e3f90d1d4249ed.jpg', desc:'Classic quilted texture.'},
+  {id:'p07', title:'Platform Sneakers (White)',     price:18000, img:'https://i.postimg.cc/Jhc2NMW2/8144b09085dd4730aab64b10a1237db1.jpg', desc:'Streetwear platform kicks.'},
+  {id:'p08', title:'Two-piece Lounge Set (Pink)',   price:19500, img:'https://i.postimg.cc/BZwwcmd4/051f8a9e08494320a9353a1abbecd0a3-1.jpg', desc:'Comfy two-piece set.'},
+  {id:'p09', title:'Crossbody Bag (Tan)',           price:12500, img:'https://i.postimg.cc/Y9D8RSDb/cc3838a9f086466a989b342b8a78241a.jpg', desc:'Compact crossbody with strap.'},
+  {id:'p10', title:'Denim Jacket',                  price:21000, img:'https://i.postimg.cc/43B14dGs/790f5968067844d99190387ea1fb4b66.jpg', desc:'Classic layering essential.'},
+  {id:'p05g',title:'T-Strap Heels (Gold)',          price:16500, img:'https://i.postimg.cc/vDFr2xrL/bef9573b7d77404aad4bdeddc3d67b75.jpg', desc:'Elegant party heels.'},
+  {id:'p04', title:'Ombre Wig (Brown Blend)',       price:26500, img:'https://i.postimg.cc/NjxnTQtP/b19c6da6fa624b8a8a8827d1275ff9a4.jpg', desc:'Silky ombre finish.'},
+  {id:'p03', title:'Curly Bob Wig',                 price:24000, img:'https://i.postimg.cc/y6SrjmBR/be9ed311fed3462fba2c56b146b89d20.jpg', desc:'Bouncy everyday curls.'},
+  {id:'p02', title:'Straight Lace Wig 20"',         price:31000, img:'https://i.postimg.cc/P5K6JKbg/f9c1761a759b412a883330ae9c856883.jpg', desc:'Natural straight look.'},
+  {id:'p01', title:'Body Wave Wig 22"',             price:28500, img:'https://i.postimg.cc/7P7m0qMM/98d0ca0833124afe9ba56ac700383a28.jpg', desc:'Soft, full body wave.'}
+];
+
+/* ===== CART (localStorage) ===== */
+let cart = {}; // id -> { qty, color, size }
+const grid = document.getElementById('productGrid');
+const cartCountEl = document.getElementById('cartCount');
+const summaryList = document.getElementById('summaryList');
+const cartTotalEl = document.getElementById('cartTotal');
+const cartTotalFooter = document.getElementById('cartTotalFooter');
+const toast = document.getElementById('toast');
+const previewImg = document.getElementById('previewImg');
+
+/* helpers */
+const money = n => Number(n||0).toLocaleString();
+function showToast(msg='Added to cart'){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1200); }
+
+function renderProducts(filter=''){
+  grid.innerHTML = '';
+  const q = (filter||'').toLowerCase();
+  PRODUCTS.filter(p => !q || (p.title + p.desc).toLowerCase().includes(q)).forEach(p=>{
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `
+      <div class="pic"><img src="${p.img}" alt="${p.title}" data-open="${p.id}"></div>
+      <div class="body">
+        <div class="title">${p.title}</div>
+        <div class="desc">${p.desc}</div>
+        <div class="price">₦${money(p.price)}</div>
+        <div class="actions">
+          <button class="btn" data-open="${p.id}">View</button>
+          <button class="btn alt add" data-id="${p.id}">Add</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* Search */
+document.getElementById('search').addEventListener('input', e => renderProducts(e.target.value) );
+
+/* product modal */
+const modal = document.getElementById('productModal');
+const m_img = document.getElementById('m_img');
+const m_title = document.getElementById('m_title');
+const m_price = document.getElementById('m_price');
+const m_desc = document.getElementById('m_desc');
+const m_qty = document.getElementById('m_qty');
+const m_color = document.getElementById('m_color');
+const m_size = document.getElementById('m_size');
+let currentProduct = null;
+
+function openProduct(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  currentProduct = p;
+  m_title.textContent = p.title;
+  m_img.src = p.img;
+  m_price.textContent = '₦' + money(p.price);
+  m_desc.textContent = p.desc || '';
+  m_qty.value = 1;
+  modal.classList.add('open');
+}
+document.getElementById('m_close').addEventListener('click', ()=> modal.classList.remove('open') );
+
+/* events for opening product modal & add buttons */
+document.body.addEventListener('click', e=>{
+  const open = e.target.getAttribute && e.target.getAttribute('data-open');
+  if(open) { openProduct(open); }
+  if(e.target.matches('.add')){
+    const id = e.target.dataset.id;
+    const base = cart[id] || {qty:0, color: '-', size: '-'};
+    cart[id] = {...base, qty: base.qty + 1};
+    saveCart();
+    showToast('Added to cart');
+  }
+  if(e.target.id === 'viewCartBtn'){ document.getElementById('cartDrawer').classList.add('open'); }
+  if(e.target.id === 'closeCart'){ document.getElementById('cartDrawer').classList.remove('open'); }
+});
+
+/* modal add / buy */
+document.getElementById('m_add').addEventListener('click', ()=>{
+  if(!currentProduct) return;
+  const id = currentProduct.id;
+  const base = cart[id] || {qty:0};
+  cart[id] = { qty: base.qty + Number(m_qty.value || 1), color: m_color.value, size: m_size.value };
+  saveCart();
+  showToast('Added to cart');
+  modal.classList.remove('open');
+});
+document.getElementById('m_buy').addEventListener('click', ()=>{
+  document.getElementById('m_add').click();
+  document.getElementById('cartDrawer').classList.add('open');
+});
+
+/* cart management */
+function cartItemsArray(){ return Object.entries(cart).map(([id,info]) => {
+  const p = PRODUCTS.find(x=>x.id===id) || {title:'Unknown',price:0,img:''};
+  return {...p, ...info, id};
+});}
+function cartCount(){ return cartItemsArray().reduce((s,i)=> s + i.qty, 0); }
+function cartTotal(){ return cartItemsArray().reduce((s,i)=> s + i.qty * i.price, 0); }
+
+function updateCartUI(){
+  cartCountEl.textContent = cartCount();
+  summaryList.innerHTML = '';
+  cartItemsArray().forEach(it=>{
+    const row = document.createElement('div'); row.className = 'cart-item';
+    row.innerHTML = `
+      <img src="${it.img}" alt="">
+      <div style="flex:1">
+        <div style="font-weight:700;color:var(--accent)">${it.title}</div>
+        <div class="small">Color: ${it.color || '-'} • Size: ${it.size || '-'}</div>
+        <div class="small">₦${money(it.price)} × <input class="qty" data-id="${it.id}" type="number" min="1" value="${it.qty}" style="width:64px"></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:800">₦${money(it.qty * it.price)}</div>
+        <div style="margin-top:8px"><button class="btn alt remove" data-id="${it.id}">Remove</button></div>
+      </div>
+    `;
+    summaryList.appendChild(row);
+  });
+  const tot = cartTotal();
+  cartTotalEl.textContent = '₦' + money(tot);
+  cartTotalFooter.textContent = money(tot);
+}
+
+function saveCart(){ localStorage.setItem('ivyz_cart', JSON.stringify(cart)); updateCartUI(); }
+function loadCart(){ const raw = localStorage.getItem('ivyz_cart'); cart = raw ? JSON.parse(raw) : {}; updateCartUI(); }
+
+/* qty change and remove */
+document.body.addEventListener('change', e=>{
+  if(e.target.matches('.qty')){
+    const id = e.target.dataset.id;
+    const q = Math.max(1, Number(e.target.value) || 1);
+    if(cart[id]){ cart[id].qty = q; saveCart(); }
+  }
+});
+document.body.addEventListener('click', e=>{
+  if(e.target.matches('.remove')){
+    const id = e.target.dataset.id; delete cart[id]; saveCart();
+  }
+});
+
+/* checkout image preview */
+document.getElementById('c_image').addEventListener('change', function(e){
+  const f = this.files && this.files[0];
+  if(!f){ previewImg.style.display='none'; previewImg.src=''; return; }
+  const url = URL.createObjectURL(f);
+  previewImg.src = url; previewImg.style.display = 'block';
+});
+
+/* copy acct */
+function copyAcct(){ const el = document.getElementById('acct'); navigator.clipboard.writeText(el.value).then(()=> showToast('Account copied')); }
+
+/* place order: POST to backend if available else mailto fallback */
+document.getElementById('placeOrder').addEventListener('click', async ()=>{
+  if(cartItemsArray().length === 0){ showToast('Cart is empty'); return; }
+  const name = document.getElementById('c_name').value.trim();
+  const phone = document.getElementById('c_phone').value.trim();
+  if(!name || !phone){ showToast('Please enter name & phone'); return; }
+
+  const address = document.getElementById('c_address').value.trim();
+  const state = document.getElementById('c_state').value.trim();
+  const note = document.getElementById('c_note').value.trim();
+  const status = document.getElementById('c_status').value;
+  const ref = document.getElementById('c_ref').value.trim();
+  const buyerImageInput = document.getElementById('c_image');
+  const buyerImageFile = (buyerImageInput.files && buyerImageInput.files[0]) ? buyerImageInput.files[0] : null;
+
+  const items = cartItemsArray();
+  const itemsText = items.map(i=> `${i.qty} x ${i.title} (${i.color}/${i.size}) — ₦${money(i.qty*i.price)}`).join('\n');
+
+  const total = cartTotal();
+  const orderId = 'IVYZ-'+Date.now().toString().slice(-7);
+  const payload = new FormData();
+  payload.append('order_id', orderId);
+  payload.append('name', name);
+  payload.append('phone', phone);
+  payload.append('address', address);
+  payload.append('state', state);
+  payload.append('note', note);
+  payload.append('payment_status', status);
+  payload.append('payment_ref', ref);
+  payload.append('total', total);
+  payload.append('items', JSON.stringify(items));
+  if(buyerImageFile) payload.append('buyer_image', buyerImageFile);
+
+  // Try to POST to your backend endpoint (OWNER.submitEndpoint).
+  let posted = false;
+  try{
+    const resp = await fetch(OWNER.submitEndpoint, { method:'POST', body: payload });
+    if(resp && resp.ok){ posted = true; }
+  }catch(err){
+    console.warn('Backend POST failed', err);
+  }
+
+  // If POST succeeded, show success and clear cart
+  if(posted){
+    saveCart();
+    cart = {}; saveCart();
+    document.getElementById('cartDrawer').classList.remove('open');
+    showToast('Order submitted — we will notify you');
+    return;
+  }
+
+  // Fallback: open mail client with order summary and (if image attached) instruct user to attach image.
+  const subject = `New Order ${orderId} — ₦${money(total)}`;
+  const body = `Order ID: ${orderId}
+Time: ${new Date().toLocaleString()}
+
+Items:
+${itemsText}
+
+Total: ₦${money(total)}
+
+Buyer:
+${name}
+${phone}
+${address || ''} ${state ? ' - '+state : ''}
+
+Note:
+${note || '-'}
+
+Payment:
+${status === 'done' ? 'Customer marked PAID' : 'Customer will transfer'}
+Reference: ${ref || '-'}
+
+Bank:
+${OWNER.bank.name}
+${OWNER.bank.accountName}
+${OWNER.bank.account}
+
+(If you attached an image, it will not be sent via this mailto link; add the image as an attachment in your email client.)
+`;
+
+  const mailto = `mailto:${encodeURIComponent(OWNER.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  // Clear cart locally
+  cart = {}; saveCart();
+  document.getElementById('cartDrawer').classList.remove('open');
+});
+
+/* "Open Email" button opens mail client without submitting */
+document.getElementById('openEmail').addEventListener('click', ()=>{
+  if(cartItemsArray().length === 0){ showToast('Cart is empty'); return; }
+  const name = document.getElementById('c_name').value.trim() || '-';
+  const phone = document.getElementById('c_phone').value.trim() || '-';
+  const address = document.getElementById('c_address').value.trim() || '-';
+  const state = document.getElementById('c_state').value.trim() || '-';
+  const note = document.getElementById('c_note').value.trim() || '-';
+  const itemsText = cartItemsArray().map(i=> `${i.qty} x ${i.title} (${i.color}/${i.size}) — ₦${money(i.qty*i.price)}`).join('\n');
+  const total = cartTotal();
+  const orderId = 'IVYZ-'+Date.now().toString().slice(-7);
+  const subject = `Order ${orderId} — ₦${money(total)}`;
+  const body = `Order ID: ${orderId}
+Items:
+${itemsText}
+
+Total: ₦${money(total)}
+
+Buyer:
+${name}
+${phone}
+${address} ${state ? ' - '+state : ''}
+
+Note: ${note}
+
+Bank:
+${OWNER.bank.name}
+${OWNER.bank.accountName}
+${OWNER.bank.account}
+`;
+  window.location.href = `mailto:${encodeURIComponent(OWNER.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+
+/* INIT */
+function init(){
+  renderProducts();
+  loadCart();
+  document.getElementById('yr').textContent = new Date().getFullYear();
+}
+init();
+</script>
+</body>
+</html>
